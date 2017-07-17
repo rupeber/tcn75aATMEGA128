@@ -1,4 +1,4 @@
-
+#define F_CPU 11059200UL
 #include <stdlib.h>
 #include <stdio.h>
 #include <avr/io.h>
@@ -6,6 +6,7 @@
 #include <util/delay.h>
 #include "tcn75.h"
 #include "uart.h"
+
 
 int main(void)
 {
@@ -16,7 +17,9 @@ int main(void)
 
 	string = malloc(80);
 
-
+	/* Initializing LED 7segment*/
+	DDRC=0xFF;
+	  
 	DDRF = (1<<PF3); 
 	PORTF = 0x08;
 	tcn75_init();
@@ -46,8 +49,14 @@ int main(void)
 			string = dtostrf(temp, 3, 5, string);
 			string2= strcat(string," °C");
 			uart_printstrn(0, string2);
+			
+			if (temp >= 30){
+			  PORTC = 0b01111111;
 		}
-
+			else {
+			  PORTC = 0b11111111;
+			}
+		}
 		_delay_ms(1000);
 	}
 
